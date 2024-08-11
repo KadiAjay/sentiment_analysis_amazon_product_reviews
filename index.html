@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Spectrum Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('background image.jpg'); /* Update this path with your actual image path */
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: #c682d3;
+            min-height: 100vh;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 36px;
+            color: #aa18e3;
+        }
+
+        #reviewForm {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        #reviewText {
+            width: 100%;
+            min-height: 50px;
+            max-height: 300px;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #7fc10d;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            transition: all 0.3s ease; /* Smooth transition for all properties */
+            animation: scaleIn 0.5s; /* Animation when loading */
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        #reviewText:focus {
+            border-color: #3498db; /* Change border color on focus */
+            outline: none; /* Remove outline */
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); /* Add shadow on focus */
+            transform: scale(1.02); /* Slightly enlarge text area */
+        }
+
+        button {
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 18px;
+            color: white;
+            background-color: #d01164;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Smooth transition for button */
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #eb1515;
+        }
+/* 
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            /* position: relative; */
+            /* width: 100%; */
+        /* } */
+
+        footer a {
+            color: #00aaff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        /* footer a:hover {
+            text-decoration: underline; */
+        /* } */ */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sentiment Spectrum Analyzer</h1>
+        <form id="reviewForm">
+            <textarea id="reviewText" rows="4" placeholder="Enter your review here..." oninput="this.style.height = 'auto'; this.style.height = (this.scrollHeight) + 'px';"></textarea><br>
+            <button type="button" onclick="submitReview()">Submit</button>
+        </form>
+        <h2 id="result"></h2>
+    </div>
+
+    <!-- <footer>
+        &copy; 2024 Sentiment Spectrum Analyzer | 
+        <a href="#">Privacy Policy</a> | 
+        <a href="#">Terms of Service</a>
+    </footer> -->
+
+    <script>
+        async function submitReview() {
+            const review = document.getElementById('reviewText').value;
+            const response = await fetch('http://localhost:5000/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ review: review })
+            });
+            const data = await response.json();
+            document.getElementById('result').innerText = 'Predicted Sentiment: ' + data.predicted_label;
+        }
+    </script>
+</body>
+</html>
